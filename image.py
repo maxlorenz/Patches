@@ -1,8 +1,8 @@
 import random
 from patches import Patch
 
-class Board(object):
-    def __create_patches__(self):
+class Image(object):
+    def __create_patches(self):
         for row_number in range(self.rows):
             row = []
 
@@ -13,7 +13,7 @@ class Board(object):
 
             self.patches.append(row)
 
-    def __find_neighbors__(self, patch, row, column):
+    def __find_neighbors(self, patch, row, column):
         if column > 0:
             patch.add_y_neighbor(self.patches[row][column - 1])
         if column < self.columns - 1:
@@ -24,11 +24,13 @@ class Board(object):
         if row < self.rows - 1:
             patch.add_x_neighbor(self.patches[row + 1][column])
 
-    def __add_neighbors__(self):
-        for row in range(self.rows):
-            for column in range(self.columns):
-                patch = self.patches[row][column]
-                self.__find_neighbors__(patch, row, column)
+    def __add_neighbors(self):
+        for patch in self.all_patches():
+            self.__find_neighbors(patch, patch.position['x'], patch.position['y'])
+
+        # for row in range(self.rows):
+        #     for column in range(self.columns):
+        #         patch = self.patches[row][column]
 
 
     def __init__(self, rows, columns):
@@ -37,16 +39,17 @@ class Board(object):
         self.patches = []
         self.last_swap = []
 
-        self.__create_patches__()
-        self.__add_neighbors__()
+        self.__create_patches()
+        self.__add_neighbors()
+
+    def all_patches(self):
+        return([ 
+            patch for row in self.patches for patch in row
+        ])       
+        
 
     def get_cost(self):
-        distances = [ 
-            patch.get_distance() 
-            for row in self.patches 
-            for patch in row ]
-
-        return sum(distances)
+        return sum([ patch.get_distance() for patch in self.all_patches() ])
 
     def swap(self, pos_a, pos_b):
         patch_a = self.patches[pos_a['x']][pos_a['y']]
@@ -58,13 +61,14 @@ class Board(object):
     def unswap(self):
         self.swap(self.last_swap[1], self.last_swap[0])
 
-    def __random_position__(self):
+    def __random_position(self):
         return {
             'x': random.randint(0, self.rows - 1),
-            'y': random.randint(0, self.columns - 1) }
+            'y': random.randint(0, self.columns - 1)
+        }
 
     def swap_random(self):
-        pos_a = self.__random_position__()
-        pos_b = self.__random_position__()
+        pos_a = self.__random_position()
+        pos_b = self.__random_position()
 
         self.swap(pos_a, pos_b)

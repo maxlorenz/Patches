@@ -1,17 +1,28 @@
-import field
-b = field.Board(47, 5)
+from image import Image
 
-for i in xrange(100000):
-    current_val = b.get_cost()
-    b.swap_random()
+# Modify to match problem
+rows = 5
+columns = 47
 
-    if b.get_cost() <= current_val:
-        b.unswap()
+swaps = 100000
+
+# Setup run
+image = Image(rows, columns)
+percentage = swaps / 100
+
+for i in xrange(swaps):
+    last_cost = image.get_cost()
+    image.swap_random()
+
+    if image.get_cost() <= last_cost:
+        image.unswap()
     
-    if i % 1000 == 0:
-        print i/1000, "%:", current_val
+    # Print percentage
+    if i % percentage == 0:
+        print i/percentage, "%:", last_cost
 
-for patch in [ patch for row in b.patches for patch in row ]:
+# Print every position
+for patch in [ patch for row in image.patches for patch in row ]:
     row = patch.position['y'] + 1
     column = patch.position['x'] + 1
 
