@@ -26,7 +26,7 @@ for i in xrange(swaps):
         print i/percentage, "%:", last_total_distances
 
 # Print results
-for patch in [ patch for row in image.patches for patch in row ]:
+for patch in image.all_patches():
     row = patch.position['y'] + 1
     column = patch.position['x'] + 1
 
