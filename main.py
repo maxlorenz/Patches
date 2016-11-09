@@ -7,7 +7,7 @@ width = 3
 height = 4.5
 
 # Increase to get better results
-swaps = 100000
+swaps = 5000
 
 # Setup
 image = Image(rows, columns, patch_width=width, patch_height=height)
@@ -27,7 +27,7 @@ for i in xrange(swaps):
 
 # Print results
 for patch in image.all_patches():
-    row = patch.position['y'] + 1
-    column = patch.position['x'] + 1
+    row = patch.position['row'] + 1
+    column = patch.position['column'] + 1
 
     print "Number:", patch.number, "Row:", row, "Column:", column

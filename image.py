@@ -20,31 +20,34 @@ class Image(object):
 
             for column_number in range(self.columns):
                 number = row_number * self.columns + column_number + 1
-                patch = Patch(number, row_number, column_number, width=self.patch_width, height=self.patch_height)
+                patch = Patch(number, column_number, row_number, width=self.patch_width, height=self.patch_height)
                 row.append(patch)
 
             self.patches.append(row)
 
-    def __find_neighbors(self, patch, row, column):
+    def __find_neighbors(self, patch, position):
+        row = position['row']
+        column = position['column']
+
         if column > 0:
-            patch.add_y_neighbor(self.patches[row][column - 1])
+            patch.add_x_neighbor(self.patches[row][column - 1])
         if column < self.columns - 1:
-            patch.add_y_neighbor(self.patches[row][column + 1])
+            patch.add_x_neighbor(self.patches[row][column + 1])
 
         if row > 0:
-            patch.add_x_neighbor(self.patches[row - 1][column])
+            patch.add_y_neighbor(self.patches[row - 1][column])
         if row < self.rows - 1:
-            patch.add_x_neighbor(self.patches[row + 1][column])
+            patch.add_y_neighbor(self.patches[row + 1][column])
 
     def __random_position(self):
         return {
-            'x': randint(0, self.rows - 1),
-            'y': randint(0, self.columns - 1)
+            'row': randint(0, self.rows - 1),
+            'column': randint(0, self.columns - 1)
         }
 
     def __add_neighbors(self):
         for patch in self.all_patches():
-            self.__find_neighbors(patch, patch.position['x'], patch.position['y'])
+            self.__find_neighbors(patch, patch.position)
 
     def all_patches(self):
         return([ patch for row in self.patches for patch in row ])       
@@ -53,8 +56,8 @@ class Image(object):
         return sum([ patch.get_distance() for patch in self.all_patches() ]) / len(self.patches)
 
     def swap(self, pos_a, pos_b):
-        patch_a = self.patches[pos_a['x']][pos_a['y']]
-        patch_b = self.patches[pos_b['x']][pos_b['y']]
+        patch_a = self.patches[pos_a['row']][pos_a['column']]
+        patch_b = self.patches[pos_b['row']][pos_b['column']]
 
         patch_a.position, patch_b.position = patch_b.position, patch_a.position
         self.last_swap = [ pos_a, pos_b ]

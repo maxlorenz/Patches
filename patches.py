@@ -1,10 +1,10 @@
 from math import sqrt
 
 class Patch(object):
-    def __init__(self, number, x, y, height=1, width=1):
+    def __init__(self, number, column, row, height=1, width=1):
         self.number = number
-        self.origin = { 'x': x, 'y': y }
-        self.position = { 'x': x, 'y': y }
+        self.origin = {  'row': row, 'column': column }
+        self.position = {  'row': row, 'column': column }
 
         self.height = height
         self.width = width
@@ -13,8 +13,8 @@ class Patch(object):
         self.y_neighbors = []
 
     def __distance(self, pos_a, pos_b):
-        delta_x = pos_a['x'] - pos_b['x']
-        delta_y = pos_a['y'] - pos_b['y']
+        delta_x = pos_a['column'] - pos_b['column']
+        delta_y = pos_a['row'] - pos_b['row']
 
         return sqrt((delta_x * self.width)**2 + (delta_y * self.height)**2)
 
